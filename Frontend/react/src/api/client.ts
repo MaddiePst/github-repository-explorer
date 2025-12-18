@@ -2,7 +2,7 @@
 // InternalAxiosRequestConfig → TypeScript type for Axios request configuration.
 import axios, { AxiosHeaders, type InternalAxiosRequestConfig } from "axios";
 
-const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const BASE = import.meta.env.VITE_API_URL;
 
 const client = axios.create({
   baseURL: BASE,
@@ -37,5 +37,7 @@ client.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+
+console.log("API URL:", import.meta.env.VITE_API_URL);
 
 export default client;

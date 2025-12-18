@@ -2,9 +2,9 @@ import { useFavorites } from "../hooks/useFavorites";
 import type { Favorite } from "../types";
 
 export default function Favorites() {
-  const { favorites, isLoading, deleteFavorite } = useFavorites();
+  const { favorites, loading, deleteFavorite } = useFavorites();
 
-  if (isLoading)
+  if (loading)
     return (
       <div className="min-h-screen flex items-center justify-center">
         Loading favorites...
