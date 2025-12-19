@@ -1,10 +1,10 @@
-#GitHub Repository Explorer ⭐
+# GitHub Repository Explorer ⭐
 
 A full-stack web application that allows users to search for GitHub repositories by username, explore repository details, and manage a personalized list of favorite repositories. The app integrates authentication, persistent favorites storage, and real-time UI updates for a seamless user experience.
 
 
 
-##Table of contents
+## Table of contents
 
 -[Overview](#overview)
   - [The challenge](#the-challenge)
@@ -17,9 +17,9 @@ A full-stack web application that allows users to search for GitHub repositories
   - [Technologies Used](#technologies-used)
 - [Author](#author)
 
-##Overview
+## Overview
 
-###The challenge
+### The challenge
 Users should be able to:
  - Search for any GitHub username and view their public repositories
  - See repository details such as name, description, stars, and language
@@ -29,7 +29,7 @@ Users should be able to:
  - Experience immediate UI feedback through optimistic updates
  - Access protected routes securely using authentication middleware
 
-###⭐ Key features
+### ⭐ Key features
 GitHub API Integration
   - Fetches live repository data directly from GitHub based on the searched username.
 Authentication & Authorization
@@ -43,17 +43,17 @@ UI Updates
 Responsive Design
   - Clean, modern UI optimized for desktop and mobile screens.
 
-###Screenshots
+### Screenshots
 ![Screenshot of the app landing page](./Screenshot%202025-05-23%20115536.png)
 ![Screenshot of the app search repo without login or without favorites](./Screenshot%202025-05-23%20115536.png)
 ![Screenshot of the app search repo with favorites](./Screenshot%202025-05-23%20115536.png)
 
-###Links
+### Links
 🔗 Live Demo:
 https://github-repository-explorer-three.vercel.app/
 
-##My process
-###Built with
+## My process
+### Built with
   - React + TypeScript
   - Vite
   - Tailwind CSS
@@ -66,7 +66,7 @@ https://github-repository-explorer-three.vercel.app/
   - Render (Backend Deployment)
   - Vercel (Frontend Deployment)
 
-###🚀 Key takeaways
+### 🚀 Key takeaways
 
 This project reflects a strong understanding of full-stack application architecture and real-world development workflows:
 
@@ -91,7 +91,7 @@ Handled loading states, authorization errors, empty results, and API failures gr
 7. Production Deployment
 Deployed a real-world full-stack application using modern hosting platforms (Render + Vercel), including environment variable management.
 
-###🛠️ Technologies used
+### 🛠️ Technologies used
 
 Frontend: React, TypeScript, Vite, Tailwind CSS
 
@@ -105,7 +105,7 @@ Deployment: Vercel (Frontend), Render (Backend)
 
 Tooling: Git, GitHub, VS Code
 
-##Author
+## Author
 
 Portfolio: https://maddiepst.github.io/
 
