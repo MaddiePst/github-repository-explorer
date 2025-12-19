@@ -6,7 +6,7 @@ A full-stack web application that allows users to search for GitHub repositories
 
 ## Table of contents
 
--[Overview](#overview)
+- [Overview](#overview)
   - [The challenge](#the-challenge)
   - [Key features](#key-features)
   - [Screenshots](#screenshots)
