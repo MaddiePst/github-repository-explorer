@@ -166,19 +166,22 @@ export default function RepoCard({ repo }: Props) {
           {/* modal card */}
           <div
             ref={modalContentRef}
-            className="flex z-3 w-full max-w-lg bg-white rounded-lg shadow-2xl "
-            style={{ maxHeight: "70vh", maxWidth: "60vh" }}
+            className="relative z-50 w-full max-w-md sm:max-w-lg bg-white rounded-2xl shadow-2xl mx-auto overflow-y-auto "
+            style={{ maxHeight: "90vh" }}
           >
-            <div className="flex items-start px-3 py-3">
+            {/* Header */}
+            <div className="flex justify-end p-4 border-b">
               <button
                 aria-label="Close login"
-                className="text-xl font-bold rounded-md hover:bg-gray-100"
+                className="text-xl font-bold rounded-md px-2 hover:bg-gray-100"
                 onClick={() => setShowLoginModal(false)}
               >
                 ✕
               </button>
             </div>
-            <div className="px-15 -mt-40 items-start">
+
+            {/* Content */}
+            <div className="px-6 sm:px-10 py-8">
               <Login />
             </div>
           </div>

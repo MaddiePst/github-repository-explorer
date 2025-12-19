@@ -21,43 +21,80 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form
-        onSubmit={onSubmit}
-        className=" rounded-xl p-8 w-full max-w-md space-y-4"
+    // <div className="min-h-screen flex items-center justify-center">
+    <form
+      onSubmit={onSubmit}
+      className="
+      w-full
+      max-w-sm
+      mx-auto
+      space-y-5
+    "
+    >
+      <h2 className="text-2xl font-bold text-center text-gray-800">Log In</h2>
+
+      <input
+        className="
+        w-full
+        border
+        rounded-md
+        px-4
+        py-2.5
+        focus:outline-none
+        focus:ring-2
+        focus:ring-blue-500
+      "
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+
+      <input
+        className="
+        w-full
+        border
+        rounded-md
+        px-4
+        py-2.5
+        focus:outline-none
+        focus:ring-2
+        focus:ring-blue-500
+      "
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+
+      <button
+        className="
+        w-full
+        bg-blue-900
+        hover:bg-blue-800
+        text-white
+        py-2.5
+        rounded-md
+        transition
+      "
+        type="submit"
       >
-        <h2 className="text-2xl font-bold text-center">Log In</h2>
+        Login
+      </button>
 
-        <input
-          className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <button
-          className="w-full bg-blue-900 text-white py-2 rounded-md"
-          type="submit"
+      <p className="text-sm text-center text-gray-600">
+        Don’t have an account?{" "}
+        <Link
+          className="text-blue-900 font-medium hover:underline"
+          to="/register"
         >
-          Login
-        </button>
-        <p className="text-sm text-center text-muted mt-2">
-          Don't have an account?{" "}
-          <Link className="text-blue-900 font-medium" to="/register">
-            Create account
-          </Link>
-        </p>
-      </form>
-    </div>
+          Create account
+        </Link>
+      </p>
+    </form>
+
+    // </div>
   );
 }
