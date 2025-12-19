@@ -44,9 +44,9 @@ Responsive Design
   - Clean, modern UI optimized for desktop and mobile screens.
 
 ### Screenshots
-![Screenshot of the app landing page](./Screenshot%202025-05-23%20115536.png)
-![Screenshot of the app search repo without login or without favorites](./Screenshot%202025-05-23%20115536.png)
-![Screenshot of the app search repo with favorites](./Screenshot%202025-05-23%20115536.png)
+![Screenshot of the app landing page](./Screenshot-of-the-app-landing-page.png)
+![Screenshot of the app search repo without login or without favorites](./Screenshot-of-the-app-search-repo-without-login-or-without-favorites.png)
+![Screenshot of the app search repo with favorites](./Screenshot-of-the-app-search-repo-with-favorites.png)
 
 ### Links
 🔗 Live Demo:
