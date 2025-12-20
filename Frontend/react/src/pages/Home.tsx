@@ -10,7 +10,7 @@ export default function Home() {
   async function getMergedRepos(username: string) {
     try {
       const res = await fetch(
-        `http://localhost:8000/repo/active?username=${username}`,
+        `https://github-repository-explorer.onrender.com/repo/active?username=${username}`,
         {
           headers: {
             "Content-Type": "application/json",

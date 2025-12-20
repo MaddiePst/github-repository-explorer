@@ -34,16 +34,7 @@ export default function Login() {
       <h2 className="text-2xl font-bold text-center text-gray-800">Log In</h2>
 
       <input
-        className="
-        w-full
-        border
-        rounded-md
-        px-4
-        py-2.5
-        focus:outline-none
-        focus:ring-2
-        focus:ring-blue-500
-      "
+        className="w-full border rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
         type="email"
         placeholder="Email"
         value={email}
@@ -52,16 +43,7 @@ export default function Login() {
       />
 
       <input
-        className="
-        w-full
-        border
-        rounded-md
-        px-4
-        py-2.5
-        focus:outline-none
-        focus:ring-2
-        focus:ring-blue-500
-      "
+        className="w-full border rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
         type="password"
         placeholder="Password"
         value={password}
