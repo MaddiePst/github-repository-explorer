@@ -29,7 +29,7 @@ Users should be able to:
  - Experience immediate UI feedback through optimistic updates
  - Access protected routes securely using authentication middleware
 
-### ⭐ Key features
+### Key features⭐ 
 GitHub API Integration
   - Fetches live repository data directly from GitHub based on the searched username.
 Authentication & Authorization
@@ -49,8 +49,7 @@ Responsive Design
 ![Screenshot of the app search repo with favorites](./Screenshot-of-the-app-search-repo-with-favorites.png)
 
 ### Links
-🔗 Live Demo:
-https://github-repository-explorer-three.vercel.app/
+🔗 Live Demo:![GitHub Repository Explorer](https://github-repository-explorer-three.vercel.app/)
 
 ## My process
 ### Built with
@@ -66,7 +65,7 @@ https://github-repository-explorer-three.vercel.app/
   - Render (Backend Deployment)
   - Vercel (Frontend Deployment)
 
-### 🚀 Key takeaways
+### Key takeaway
 
 This project reflects a strong understanding of full-stack application architecture and real-world development workflows:
 
@@ -91,24 +90,18 @@ Handled loading states, authorization errors, empty results, and API failures gr
 7. Production Deployment
 Deployed a real-world full-stack application using modern hosting platforms (Render + Vercel), including environment variable management.
 
-### 🛠️ Technologies used
+### Technologies used
 
-Frontend: React, TypeScript, Vite, Tailwind CSS
-
-Backend: Node.js, Express, JWT
-
-Database: Supabase
-
-APIs: GitHub REST API
-
-Deployment: Vercel (Frontend), Render (Backend)
-
-Tooling: Git, GitHub, VS Code
+- Frontend: React, TypeScript, Vite, Tailwind CSS
+- Backend: Node.js, Express, JWT
+- Database: Supabase
+- APIs: GitHub REST API
+- Deployment: Vercel (Frontend), Render (Backend)
+- Tooling: Git, GitHub, VS Code
 
 ## Author
 
-Portfolio: https://maddiepst.github.io/
+- Website: [Madalina Pastiu Portfolio](https://maddiepst.github.io/)
+- LinkedIn: [Madalina Pastiu](www.linkedin.com/in/madalina-p-52a01396)
+- GitHub: [@maddiepst](https://github.com/MaddiePst)
 
-LinkedIn: Madalina Pastiu
-
-GitHub: @MaddiePst
