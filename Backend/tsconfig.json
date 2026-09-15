@@ -2,7 +2,11 @@
   "compilerOptions": {
     "target": "es2020", // Compile modern JS syntax
     "module": "commonjs", // Use CommonJS for Node compatibility
-    "moduleResolution": "node", // Resolve imports like Node.js
+    // moduleResolution intentionally omitted: TypeScript infers the
+    // classic Node-style resolution from "module": "commonjs" on its
+    // own. The old explicit value here, "node" (aka "node10"), was
+    // deprecated since TS 5.0 and TypeScript 7 removed it outright,
+    // which is what broke the Render build.
     "esModuleInterop": true, // Allow default import for CJS modules
     "forceConsistentCasingInFileNames": true,
     "strict": true, // Enable all strict type-checking options
