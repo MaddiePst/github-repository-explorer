@@ -4,6 +4,70 @@ import { supabase } from "../Connections/supabaseClient";
 import { AuthRequest } from "../Middleware/authMiddleware";
 import axios from "axios";
 
+// Shared headers for every GitHub REST call.
+// Optional: set GITHUB_TOKEN in .env to raise GitHub's unauthenticated
+// rate limit (60/hr for normal endpoints, 10/min for search) up to
+// 5,000/hr and 30/min respectively.
+function githubHeaders() {
+  return {
+    Accept: "application/vnd.github+json",
+    ...(process.env.GITHUB_TOKEN
+      ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
+      : {}),
+  };
+}
+
+// Translates a GitHub API error into the right HTTP response. Returns
+// true if it handled (and responded to) the error, false otherwise.
+function respondToGithubError(
+  res: Response,
+  err: any,
+  notFoundMessage: string
+): boolean {
+  const status = err?.response?.status;
+  if (status === 404) {
+    res.status(404).json({ message: notFoundMessage });
+    return true;
+  }
+  if (status === 422) {
+    res.status(400).json({ message: "Invalid search query" });
+    return true;
+  }
+  if (
+    status === 403 &&
+    err?.response?.headers?.["x-ratelimit-remaining"] === "0"
+  ) {
+    res.status(429).json({
+      message: "GitHub API rate limit exceeded. Please try again later.",
+    });
+    return true;
+  }
+  console.error("GitHub API error:", err?.response?.data || err);
+  res.status(502).json({ message: "GitHub API error" });
+  return true;
+}
+
+// Merges a list of GitHub repo objects with the logged-in user's saved
+// favorites, tagging each repo with `favorited: boolean`. Shared by
+// both the per-user repo listing and the repository search endpoint.
+async function mergeWithFavorites(repos: any[], userId: string) {
+  const { data: favs, error } = await supabase
+    .from("favorites")
+    .select("*")
+    .eq("user_id", userId);
+
+  if (error) throw error;
+
+  const favoriteRepoIds = new Set(
+    (favs || []).map((f: any) => String(f.repo_id).trim())
+  );
+
+  return repos.map((repo: any) => ({
+    ...repo,
+    favorited: favoriteRepoIds.has(String(repo.id)),
+  }));
+}
+
 // GET /repo/favorites
 export async function getFavorites(req: AuthRequest, res: Response) {
   try {
@@ -155,49 +219,89 @@ export async function deleteFavorite(req: AuthRequest, res: Response) {
 }
 
 // GET /repo/active?username=USERNAME
+// Lists a specific GitHub user's public repositories.
 export async function getReposAndFav(req: AuthRequest, res: Response) {
   try {
     const username = req.query.username as string;
 
-    if (!username) {
+    if (!username || !username.trim()) {
       return res.status(400).json({ message: "Missing username" });
     }
 
-    // 1. GitHub repos
-    const ghRes = await axios.get(
-      `https://api.github.com/users/${username}/repos`
-    );
-    const repos = ghRes.data;
+    let repos;
+    try {
+      const ghRes = await axios.get(
+        `https://api.github.com/users/${encodeURIComponent(
+          username.trim()
+        )}/repos`,
+        {
+          params: { per_page: 100, sort: "updated" },
+          headers: githubHeaders(),
+        }
+      );
+      repos = ghRes.data;
+    } catch (ghErr: any) {
+      respondToGithubError(res, ghErr, "GitHub user not found");
+      return;
+    }
 
     // If not logged in → return GH repos only
     if (!req.user) {
       return res.json({ repos });
     }
 
-    // 2. Get user's favorites
-    const { data: favs, error } = await supabase
-      .from("favorites")
-      .select("*")
-      .eq("user_id", req.user.id);
-
-    if (error) {
-      console.error(error);
+    try {
+      const merged = await mergeWithFavorites(repos, req.user.id);
+      return res.json({ repos: merged });
+    } catch (dbErr) {
+      console.error(dbErr);
       return res.status(500).json({ message: "DB error" });
     }
-
-    // 3. Merge GitHub repos with favorites
-    const favoriteRepoIds = new Set(
-      favs.map((f: any) => String(f.repo_id).trim())
-    );
-
-    const merged = repos.map((repo: any) => ({
-      ...repo,
-      favorited: favoriteRepoIds.has(String(repo.id)),
-    }));
-
-    return res.json({ repos: merged });
   } catch (err) {
     console.error("getReposAndFav error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
+// GET /repo/search?query=KEYWORDS
+// Full-text search across all of GitHub's public repositories (by
+// name/description/topics), as opposed to getReposAndFav which only
+// lists one specific user's repos.
+export async function searchRepos(req: AuthRequest, res: Response) {
+  try {
+    const query = (req.query.query as string) || "";
+    if (!query.trim()) {
+      return res.status(400).json({ message: "Missing search query" });
+    }
+
+    let repos;
+    try {
+      const ghRes = await axios.get(
+        "https://api.github.com/search/repositories",
+        {
+          params: { q: query.trim(), per_page: 30, sort: "stars", order: "desc" },
+          headers: githubHeaders(),
+        }
+      );
+      repos = ghRes.data.items || [];
+    } catch (ghErr: any) {
+      respondToGithubError(res, ghErr, "No repositories found");
+      return;
+    }
+
+    if (!req.user) {
+      return res.json({ repos });
+    }
+
+    try {
+      const merged = await mergeWithFavorites(repos, req.user.id);
+      return res.json({ repos: merged });
+    } catch (dbErr) {
+      console.error(dbErr);
+      return res.status(500).json({ message: "DB error" });
+    }
+  } catch (err) {
+    console.error("searchRepos error:", err);
     return res.status(500).json({ message: "Server error" });
   }
 }

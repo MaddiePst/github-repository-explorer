@@ -4,13 +4,17 @@ import {
   addFavorite,
   deleteFavorite,
   getReposAndFav,
+  searchRepos,
 } from "../Controllers/repoController";
 import { authMiddleware } from "../Middleware/authMiddleware";
 
 const router = Router();
 
-// Public route
+// Public routes (authMiddleware attaches req.user if a token is
+// present, but doesn't require one — logged-out visitors still get
+// results, just without favorited status merged in)
 router.get("/active", authMiddleware, getReposAndFav);
+router.get("/search", authMiddleware, searchRepos);
 
 // Protect routes below
 router.use(authMiddleware);

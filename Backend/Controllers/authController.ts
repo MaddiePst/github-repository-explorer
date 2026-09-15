@@ -26,10 +26,21 @@ const JWT_SECRET: jwt.Secret = RAW_JWT_SECRET as jwt.Secret;
 // Register: POST /auth/register
 export async function register(req: Request, res: Response) {
   try {
-    const { email, password } = req.body || {};
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
+    const { email, password, name } = req.body || {};
+
+    // Validate ALL inputs before touching the database, so an invalid
+    // request never creates a partial user row.
+    if (!email || !password || !name) {
+      return res
+        .status(400)
+        .json({ message: "Name, email and password required" });
     }
+    if (String(password).length < 8) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 8 characters" });
+    }
+
     // check if user exists
     const { data: existing, error: qErr } = await supabase
       .from("users")
@@ -48,7 +59,6 @@ export async function register(req: Request, res: Response) {
     const hashed = await bcrypt.hash(password, SALT_ROUNDS);
 
     // insert user and return id, email, name
-    // after hashing password and validating inputs: include name in the insert payload
     const { data, error } = await supabase
       .from("users")
       .insert([
@@ -56,20 +66,18 @@ export async function register(req: Request, res: Response) {
           id: uuidv4(),
           email: String(email).toLowerCase(),
           password: hashed,
-          name: String(req.body.name || "").trim() || null,
+          name: String(name).trim(),
         },
       ])
       .select("id, email, name")
       .single();
 
-    if (!email || !password || !req.body.name) {
-      return res
-        .status(400)
-        .json({ message: "Name, email and password required" });
-    }
-
     if (error) {
       console.error("DB insert error:", error);
+      if (error.code === "23505") {
+        // unique constraint on email — race with the check above
+        return res.status(400).json({ message: "User already exists" });
+      }
       return res.status(500).json({ message: "Insert failed" });
     }
 

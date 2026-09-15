@@ -10,11 +10,21 @@ import repoRoutes from "./Routes/repoRoutes";
 const app = express();
 const PORT = Number(process.env.PORT || 8000);
 
-app.use(cors());
+// Allowed frontend origins. Override/extend via CORS_ORIGIN in .env
+// (comma-separated) so deployed URLs don't need a code change.
+const defaultOrigins = [
+  "http://localhost:5173",
+  "https://github-repository-explorer-three.vercel.app",
+];
+const envOrigins = (process.env.CORS_ORIGIN || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://your-frontend-name.vercel.app"],
+    origin: allowedOrigins,
     credentials: true,
   })
 );
@@ -26,6 +36,11 @@ app.use("/auth", authRoutes);
 app.use("/repo", repoRoutes);
 
 app.get("/", (req, res) => res.send("GitHub Repo Explorer API"));
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: "Not found" });
+});
 
 // Error handler
 app.use((err: any, req: any, res: any, next: any) => {

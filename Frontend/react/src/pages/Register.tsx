@@ -1,30 +1,37 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { toast } from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import type { AxiosError } from "axios";
 
+const inputClass =
+  "w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40";
+
 export default function Register() {
-  const [name, setName] = useState(""); // <-- new
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const auth = useAuth();
   const nav = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
     setLoading(true);
     try {
-      // pass name to register
       await auth.register({ name: name.trim(), email: email.trim(), password });
       nav("/");
     } catch (err: unknown) {
-      // safer narrowing instead of `any`
       const error = err as AxiosError<{ message?: string }>;
-      alert(
+      toast.error(
         error?.response?.data?.message ||
           (error instanceof Error && error.message) ||
-          "Register failed"
+          "Registration failed"
       );
     } finally {
       setLoading(false);
@@ -32,48 +39,58 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form
-        onSubmit={onSubmit}
-        className=" rounded-xl p-8 w-full max-w-md space-y-4"
+    <form onSubmit={onSubmit} className="w-full max-w-md mx-auto space-y-4">
+      <h2 className="text-2xl font-display font-bold text-center text-slate-900">
+        Create your account
+      </h2>
+      <p className="text-sm text-center text-slate-500 -mt-2">
+        Save repos to your favorites and pick up where you left off.
+      </p>
+
+      <input
+        className={inputClass}
+        type="text"
+        placeholder="Full name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        autoComplete="name"
+        required
+      />
+
+      <input
+        className={inputClass}
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        autoComplete="email"
+        required
+      />
+      <input
+        className={inputClass}
+        type="password"
+        placeholder="Password (min. 8 characters)"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        autoComplete="new-password"
+        minLength={8}
+        required
+      />
+
+      <button
+        className="w-full rounded-lg bg-brand-600 py-2.5 font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+        type="submit"
+        disabled={loading}
       >
-        <h2 className="text-2xl font-bold text-center">Create Account</h2>
+        {loading ? "Creating account…" : "Create account"}
+      </button>
 
-        {/* Name input */}
-        <input
-          className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500"
-          type="text"
-          placeholder="Full name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-
-        <input
-          className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <button
-          className="w-full bg-blue-900 text-white py-2 rounded-md disabled:opacity-50"
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
-    </div>
+      <p className="text-sm text-center text-slate-500">
+        Already have an account?{" "}
+        <Link className="font-medium text-brand-600 hover:underline" to="/login">
+          Log in
+        </Link>
+      </p>
+    </form>
   );
 }

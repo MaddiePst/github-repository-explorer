@@ -1,13 +1,16 @@
 // src/context/authProvider.tsx
-import { useState, useEffect } from "react";
+//
+// Note: this used to also kick off fetchFavorites() here. That logic
+// now lives in FavoritesProvider itself (it watches useAuth().user), so
+// auth and favorites stay decoupled — this provider only knows about
+// the logged-in user.
+import { useState } from "react";
 import type { ReactNode } from "react";
 import client from "../api/client";
-import { useFavorites } from "../hooks/useFavorites";
 import {
   AuthContext,
   type AuthContextValue,
   type User,
-  // type RegisterPayload,
 } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -15,13 +18,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const raw = localStorage.getItem("user");
     return raw ? JSON.parse(raw) : null;
   });
-
-  // const { user } = useAuth(); // your auth hook/context
-  const { fetchFavorites } = useFavorites();
-
-  useEffect(() => {
-    if (user) fetchFavorites();
-  }, [user, fetchFavorites]);
 
   const login: AuthContextValue["login"] = async (email, password) => {
     const res = await client.post("/auth/login", { email, password });

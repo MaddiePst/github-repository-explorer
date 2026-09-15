@@ -1,4 +1,6 @@
 // src/types.ts
+export type SearchMode = "user" | "repo";
+
 export interface GithubRepo {
   id: number | string;
   name: string;
